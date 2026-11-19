@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Lily &amp; Joe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <h1 class="title"><span class="n-lily">Lily</span> <span class="amp">&amp;</span> <span class="n-joe">Joe</span></h1>
+      <p class="sub">Our little world. A tiny home for two cats and the two of you.</p>
+      <div class="netbar" id="netbar">
+        <span class="pill" id="pill-conn" hidden></span>
+        <span class="pill" id="pill-partner" hidden></span>
+        <span class="code" id="room-code" hidden></span>
+        <button class="mini" id="btn-invite" type="button" hidden>Copy invite link</button>
+        <button class="mini" id="btn-leave" type="button" hidden>Leave room</button>
+        <span class="solo-note" id="solo-note">Solo mode: saved on this device only.</span>
+        <button class="mini" id="btn-online" type="button">Play together online</button>
+      </div>
+    </header>
+
+    <main class="play">
+      <section class="stage" id="stage" aria-label="The room">
+        <div class="frame">
+          <canvas id="game" width="256" height="192" role="img"
+                  aria-label="A top-down view of a cozy room where Lily, a white cat, and Joe, a black cat, live together."></canvas>
+        </div>
+        <p id="toast" class="toast" role="status" aria-live="polite"></p>
+      </section>
+
+      <aside class="side" aria-label="Controls">
+        <button class="btn fs-btn" id="act-fs" type="button" aria-pressed="false">Fullscreen</button>
+        <div class="cards">
+          <button class="cat-card lily" id="pick-lily" type="button" aria-pressed="true">
+            <canvas class="portrait" id="portrait-lily" width="16" height="16" aria-hidden="true"></canvas>
+            <span class="cat-name">Lily</span>
+            <span class="cat-status" id="st-lily">is relaxing</span>
+            <span class="stats" id="stats-lily"></span>
+          </button>
+          <button class="cat-card joe" id="pick-joe" type="button" aria-pressed="false">
+            <canvas class="portrait" id="portrait-joe" width="16" height="16" aria-hidden="true"></canvas>
+            <span class="cat-name">Joe</span>
+            <span class="cat-status" id="st-joe">is relaxing</span>
+            <span class="stats" id="stats-joe"></span>
+          </button>
+        </div>
+
+        <div class="bond" aria-label="Relationship between Lily and Joe">
+          <h2 class="panel-title">Lily &amp; Joe</h2>
+          <canvas id="bond-hearts" width="40" height="5" aria-hidden="true"></canvas>
+          <p class="bond-name" id="bond-name">Curious friends</p>
+          <div class="stat"><span class="sl">Affection</span><span class="bar" id="bar-affection" role="img" aria-label="Affection"><i></i></span></div>
+          <div class="stat"><span class="sl">Trust</span><span class="bar" id="bar-trust" role="img" aria-label="Trust"><i></i></span></div>
+          <p class="together">Time together: <span id="together">0 min</span></p>
+        </div>
+
+        <div class="actions">
+          <button class="btn" id="act-feed" type="button">Feed</button>
+          <button class="btn" id="act-play" type="button">Play</button>
+          <button class="btn" id="act-bathe" type="button">Bathe</button>
+          <button class="btn" id="act-sleep" type="button">Sleep</button>
+          <button class="btn" id="act-pet" type="button">Pet</button>
+          <button class="btn" id="act-nuzzle" type="button">Nuzzle</button>
+          <button class="btn" id="act-nap" type="button">Nap together</button>
+          <button class="btn" id="act-look" type="button">Look outside</button>
+        </div>
+
+        <p class="hint">Feed, Play, Bathe and Sleep act on the chosen cat. Tap the floor to send it somewhere, tap a cat to pet it. Keys: arrows or WASD walk, 1 and 2 choose a cat, P pets, F fullscreen.</p>
+      </aside>
+    </main>
+  </div>
+
+  <div class="lobby" id="lobby" role="dialog" aria-modal="true" aria-labelledby="lobby-title" hidden>
+    <div class="lobby-card">
+      <div id="lobby-main">
+        <h2 id="lobby-title">Lily &amp; Joe</h2>
+        <p class="lobby-lead">Two people, one little home. Make a private room and send your partner the code.</p>
+        <p class="lobby-warn" id="lobby-warn" hidden></p>
+        <label class="field">Your name
+          <input id="in-name" maxlength="12" autocomplete="nickname" spellcheck="false">
+        </label>
+        <button class="btn" id="btn-create" type="button">Create a room</button>
+        <label class="field">Invitation code
+          <input id="in-code" maxlength="9" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABCD-EFGH">
+        </label>
+        <button class="btn" id="btn-join" type="button">Join a room</button>
+        <button class="btn quiet" id="btn-solo" type="button">Play solo on this device</button>
+        <button class="btn quiet" id="btn-close" type="button" hidden>Back to the game</button>
+        <p class="lobby-error" id="lobby-error" role="alert"></p>
+      </div>
+      <div id="lobby-created" hidden>
+        <h2>Your room is ready</h2>
+        <p class="lobby-lead">Send this code to your partner. They open the game, choose Join a room and type it in.</p>
+        <p class="big-code" id="created-code"></p>
+        <button class="btn" id="btn-copy-code" type="button">Copy code</button>
+        <button class="btn" id="btn-copy-link" type="button">Copy invite link</button>
+        <button class="btn" id="btn-enter" type="button">Go to the room</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="js/mock-firebase.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/multiplayer.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/world.js"></script>
+  <script src="js/effects.js"></script>
+  <script src="js/pets.js"></script>
+  <script src="js/game-engine.js"></script>
+  <script src="js/sync.js"></script>
+  <script src="js/lobby.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
